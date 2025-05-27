@@ -1,1 +1,8 @@
 streamlit
+diffusers
+transformers
+accelerate
+scipy
+torch
+Pillow
+invisible_watermark
