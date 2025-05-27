@@ -140,7 +140,7 @@ if st.button("✨ Generate Gambar!", use_container_width=True, type="primary"):
                     ).images[0]
 
                 st.success("Gambar berhasil dihasilkan!")
-                st.image(image_output, caption=f"Gambar dari Prompt: '{user_prompt}' (Seed: {final_seed})", use_column_width=True)
+                st.image(image_output, caption=f"Gambar dari Prompt: '{user_prompt}' (Seed: {final_seed})", use_container_width=True)
 
                 # Tombol Download
                 buf = BytesIO()
