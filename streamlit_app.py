@@ -3,29 +3,36 @@ import torch
 from diffusers import StableDiffusionPipeline
 from PIL import Image
 import random
-import datetime # Meskipun tidak digunakan untuk seed dinamis, tetap ada jika Anda ingin mengaktifkan opsi timestamp
-from io import BytesIO # Untuk tombol download gambar
+import datetime
+from io import BytesIO
 
 # --- Konfigurasi Model ---
 MODEL_ID = "runwayml/stable-diffusion-v1-5"
 
 # --- Cache Model untuk Efisiensi ---
-# Menggunakan st.cache_resource agar model hanya dimuat sekali saat aplikasi dimulai
 @st.cache_resource
 def load_model():
     # Deteksi perangkat (GPU jika tersedia, jika tidak CPU)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     st.info(f"Memuat model Stable Diffusion ke: {device}. Ini mungkin memakan waktu beberapa detik...") # Pemberitahuan di UI
-    
-    # Muat pipeline dengan float16 untuk hemat VRAM jika menggunakan GPU
-    # Fallback ke float32 jika di CPU atau jika float16 menyebabkan masalah
+
+    # Tentukan dtype berdasarkan device
+    if device == "cuda":
+        # Gunakan float16 jika di GPU untuk efisiensi VRAM dan kecepatan
+        torch_dtype = torch.float16
+        st.info("Menggunakan float16 untuk GPU.")
+    else:
+        # Gunakan float32 jika di CPU karena float16 tidak disarankan atau tidak didukung penuh
+        torch_dtype = torch.float32
+        st.warning("GPU tidak terdeteksi. Menggunakan CPU dengan float32. Generasi gambar akan jauh lebih lambat.")
+
+    # Muat pipeline
     try:
-        pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch.float16)
+        pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID, torch_dtype=torch_dtype)
         pipe = pipe.to(device)
     except Exception as e:
-        st.warning(f"Gagal memuat model dengan float16, mencoba dengan float32. Error: {e}")
-        pipe = StableDiffusionPipeline.from_pretrained(MODEL_ID)
-        pipe = pipe.to(device)
+        st.error(f"Gagal memuat model: {e}")
+        st.stop() # Hentikan eksekusi aplikasi jika gagal memuat model
     
     st.success("Model Stable Diffusion berhasil dimuat!")
     return pipe
@@ -35,19 +42,15 @@ st.set_page_config(
     page_title="Generasi Gambar AI",
     page_icon="✨",
     layout="wide", # Menggunakan layout lebar untuk lebih banyak ruang
-    initial_sidebar_state="expanded" # Sidebar dibuka secara default
+    # initial_sidebar_state="expanded" # Sidebar dihilangkan, jadi ini tidak perlu lagi
 )
 
 st.title("✨ Generasi Gambar AI dengan Stable Diffusion")
 st.markdown("Ubah ide-ide Anda menjadi gambar menakjubkan!")
 
-st.sidebar.header("Pengaturan Model")
-
 # --- Inisialisasi Model (ini akan dijalankan sekali) ---
 with st.spinner("Menginisialisasi model Stable Diffusion..."):
     pipe = load_model()
-
-st.sidebar.success("Model siap digunakan!")
 
 # --- Antarmuka Pengguna untuk Prompt dan Parameter ---
 
@@ -99,8 +102,6 @@ with col3:
         help="Seed mengontrol keacakan gambar. 'Acak' akan menghasilkan gambar unik setiap kali."
     )
     if seed_option == 'Acak':
-        # Gunakan seed acak baru setiap kali tombol generate ditekan
-        # Ini akan diinisialisasi ulang di dalam fungsi generate
         current_seed = None 
         st.markdown("_Seed akan dihasilkan secara acak saat Anda menekan Generate._")
     else:
@@ -152,10 +153,15 @@ if st.button("✨ Generate Gambar!", use_container_width=True, type="primary"):
                     mime="image/png",
                     use_container_width=True
                 )
+                
+                # Tampilkan tulisan kredit setelah gambar berhasil didisplay
+                st.markdown("---")
+                st.markdown("Dibuat dengan ❤️ dan Streamlit.")
 
             except Exception as e:
                 st.error(f"Terjadi kesalahan saat menghasilkan gambar: {e}")
                 st.warning("Beberapa penyebab umum: GPU kehabisan memori, atau masalah dengan prompt. Coba kurangi 'Jumlah Langkah Inferensi' atau 'Skala Panduan', atau sederhanakan prompt Anda.")
 
-st.markdown("---")
-st.markdown("Dibuat dengan ❤️ dan Streamlit.")
+# Tulisan kredit dihilangkan dari luar blok if button
+# st.markdown("---")
+# st.markdown("Dibuat dengan ❤️ dan Streamlit.")
