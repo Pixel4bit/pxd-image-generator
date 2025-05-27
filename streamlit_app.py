@@ -14,13 +14,12 @@ MODEL_ID = "runwayml/stable-diffusion-v1-5"
 def load_model():
     # Deteksi perangkat (GPU jika tersedia, jika tidak CPU)
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    st.info(f"Memuat model Stable Diffusion ke: {device}. Ini mungkin memakan waktu beberapa detik...") # Pemberitahuan di UI
+    st.info(f"Memuat model Stable Diffusion. Ini mungkin memakan waktu beberapa detik...") # Pemberitahuan di UI
 
     # Tentukan dtype berdasarkan device
     if device == "cuda":
         # Gunakan float16 jika di GPU untuk efisiensi VRAM dan kecepatan
         torch_dtype = torch.float16
-        st.info("Menggunakan float16 untuk GPU.")
     else:
         # Gunakan float32 jika di CPU karena float16 tidak disarankan atau tidak didukung penuh
         torch_dtype = torch.float32
@@ -33,7 +32,7 @@ def load_model():
     except Exception as e:
         st.error(f"Gagal memuat model: {e}")
         st.stop() # Hentikan eksekusi aplikasi jika gagal memuat model
-    
+
     st.success("Model Stable Diffusion berhasil dimuat!")
     return pipe
 
@@ -42,36 +41,44 @@ st.set_page_config(
     page_title="Generasi Gambar AI",
     page_icon="✨",
     layout="wide", # Menggunakan layout lebar untuk lebih banyak ruang
-    # initial_sidebar_state="expanded" # Sidebar dihilangkan, jadi ini tidak perlu lagi
 )
 
-st.title("✨ Generasi Gambar AI dengan Stable Diffusion")
-st.markdown("Ubah ide-ide Anda menjadi gambar menakjubkan!")
+st.title("✨ Generasi Gambar dengan Stable Diffusion")
+st.markdown("Ubah ide-ide kamu menjadi gambar menakjubkan!")
 
 # --- Inisialisasi Model (ini akan dijalankan sekali) ---
 with st.spinner("Menginisialisasi model Stable Diffusion..."):
     pipe = load_model()
 
+# --- Inisialisasi Session State ---
+# Ini penting untuk menyimpan gambar yang sudah digenerate
+if 'generated_image' not in st.session_state:
+    st.session_state.generated_image = None
+if 'generated_prompt' not in st.session_state:
+    st.session_state.generated_prompt = ""
+if 'generated_seed' not in st.session_state:
+    st.session_state.generated_seed = None
+
 # --- Antarmuka Pengguna untuk Prompt dan Parameter ---
 
 # Bagian Prompt
-st.header("🖊️ Masukkan Prompt Anda")
+st.header("🖊️ Masukkan Prompt kamu")
 col_prompt, col_neg_prompt = st.columns(2)
 
 with col_prompt:
     user_prompt = st.text_area(
-        "**Prompt Positif (Apa yang ingin Anda lihat):**",
-        "a majestic fantasy landscape, digital art, highly detailed, beautiful lighting, trending on artstation",
+        "**Prompt Positif (Apa yang ingin kamu lihat):**",
+        "snow-capped mountain range at night reflecting a vibrant aurora borealis, long exposure, ethereal lighting, sense of wonder and tranquility",
         height=150,
-        help="Deskripsikan gambar yang Anda inginkan. Semakin detail, semakin baik!"
+        help="Deskripsikan gambar yang kamu inginkan. Semakin detail, semakin baik!"
     )
 
 with col_neg_prompt:
     user_negative_prompt = st.text_area(
-        "**Prompt Negatif (Apa yang tidak ingin Anda lihat):**",
+        "**Prompt Negatif (Apa yang tidak ingin kamu lihat):**",
         "low quality, blurry, ugly, distorted, bad anatomy, deformed, text, watermark, extra fingers, malformed hands",
         height=150,
-        help="Sebutkan hal-hal yang ingin Anda hindari di gambar (misal: kualitas buruk, distorsi)."
+        help="Sebutkan hal-hal yang ingin kamu hindari di gambar (misal: kualitas buruk, distorsi)."
     )
 
 st.markdown("---")
@@ -102,8 +109,7 @@ with col3:
         help="Seed mengontrol keacakan gambar. 'Acak' akan menghasilkan gambar unik setiap kali."
     )
     if seed_option == 'Acak':
-        current_seed = None 
-        st.markdown("_Seed akan dihasilkan secara acak saat Anda menekan Generate._")
+        current_seed = None
     else:
         current_seed = st.number_input(
             "Masukkan Seed Manual",
@@ -119,11 +125,10 @@ if st.button("✨ Generate Gambar!", use_container_width=True, type="primary"):
         st.warning("Prompt positif tidak boleh kosong!")
     else:
         # Menampilkan pesan loading
-        with st.spinner("Memproses gambar Anda... Ini mungkin memakan waktu beberapa detik."):
+        with st.spinner("Memproses gambar kamu..."):
             try:
                 # Dapatkan seed yang sebenarnya
                 final_seed = current_seed if seed_option == 'Manual' else random.randint(0, 999999999)
-                st.info(f"Menggunakan seed: `{final_seed}`")
 
                 # Buat generator random untuk reproduktibilitas
                 # Pastikan generator berada di device yang sama dengan pipe
@@ -139,29 +144,36 @@ if st.button("✨ Generate Gambar!", use_container_width=True, type="primary"):
                         generator=generator
                     ).images[0]
 
-                st.success("Gambar berhasil dihasilkan!")
-                st.image(image_output, caption=f"Gambar dari Prompt: '{user_prompt}' (Seed: {final_seed})", use_container_width=True)
+                # --- Simpan gambar dan info ke session state ---
+                st.session_state.generated_image = image_output
+                st.session_state.generated_prompt = user_prompt
+                st.session_state.generated_seed = final_seed
+                # ---
 
-                # Tombol Download
-                buf = BytesIO()
-                image_output.save(buf, format="PNG")
-                byte_im = buf.getvalue()
-                st.download_button(
-                    label="💾 Unduh Gambar",
-                    data=byte_im,
-                    file_name=f"generated_image_{final_seed}.png",
-                    mime="image/png",
-                    use_container_width=True
-                )
-                
-                # Tampilkan tulisan kredit setelah gambar berhasil didisplay
-                st.markdown("---")
-                st.markdown("Dibuat dengan ❤️ dan Streamlit.")
+                st.success("Gambar berhasil dihasilkan! Lihat hasilnya di bawah.")
 
             except Exception as e:
                 st.error(f"Terjadi kesalahan saat menghasilkan gambar: {e}")
-                st.warning("Beberapa penyebab umum: GPU kehabisan memori, atau masalah dengan prompt. Coba kurangi 'Jumlah Langkah Inferensi' atau 'Skala Panduan', atau sederhanakan prompt Anda.")
+                st.warning("Beberapa penyebab umum: GPU kehabisan memori, atau masalah dengan prompt. Coba kurangi 'Jumlah Langkah Inferensi' atau 'Skala Panduan', atau sederhanakan prompt kamu.")
 
-# Tulisan kredit dihilangkan dari luar blok if button
-# st.markdown("---")
-# st.markdown("Dibuat dengan ❤️ dan Streamlit.")
+# --- Tampilkan Gambar yang Dihasilkan (di luar blok if button) ---
+# Ini akan memastikan gambar tetap ada bahkan setelah reruns
+if st.session_state.generated_image:
+    st.markdown("---")
+    st.header("🖼️ Hasil Generasi")
+    st.image(st.session_state.generated_image, use_container_width=True)
+
+    # Tombol Download ditempatkan di sini
+    buf = BytesIO()
+    st.session_state.generated_image.save(buf, format="PNG")
+    byte_im = buf.getvalue()
+    st.download_button(
+        label="💾 Unduh Gambar",
+        data=byte_im,
+        file_name=f"generated_image_{st.session_state.generated_seed}.png",
+        mime="image/png",
+        use_container_width=True
+    )
+
+    st.markdown("---")
+    st.markdown("Dibuat dengan ❤️ dan Streamlit.")
