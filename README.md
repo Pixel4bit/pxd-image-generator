@@ -87,7 +87,7 @@ pxd-image-generator/
 
 ## 📄 Lisensi
 
-Proyek ini dilisensikan di bawah [MIT License](LICENSE).
+Proyek ini dilisensikan di bawah [Apache 2](LICENSE).
 
 ---
 
