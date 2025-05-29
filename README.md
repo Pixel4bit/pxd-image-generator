@@ -1,4 +1,4 @@
-# ✨ PXD Image Generator
+# ✨ PXD Stable Diffusion Image-Generator
 
 **PXD Image Generator** adalah aplikasi berbasis Streamlit yang memungkinkan Anda menghasilkan gambar AI dari deskripsi teks menggunakan model [Stable Diffusion v1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5). Aplikasi ini dirancang untuk memberikan kontrol penuh kepada pengguna melalui pengaturan seperti prompt positif/negatif, jumlah langkah inferensi, skala panduan (CFG), dan seed acak atau manual.
 
@@ -87,7 +87,7 @@ pxd-image-generator/
 
 ## 📄 Lisensi
 
-Proyek ini dilisensikan di bawah [Apache 2](LICENSE).
+Proyek ini dilisensikan di bawah [Apache 2.0](LICENSE).
 
 ---
 
