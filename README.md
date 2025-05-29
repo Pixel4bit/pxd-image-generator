@@ -1,12 +1,12 @@
 # ✨ PXD Stable Diffusion Image-Generator
 
-**PXD Image Generator** adalah aplikasi berbasis Streamlit yang memungkinkan Anda menghasilkan gambar AI dari deskripsi teks menggunakan model [Stable Diffusion v1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5). Aplikasi ini dirancang untuk memberikan kontrol penuh kepada pengguna melalui pengaturan seperti prompt positif/negatif, jumlah langkah inferensi, skala panduan (CFG), dan seed acak atau manual.
+**PXD Image Generator** adalah aplikasi berbasis Streamlit yang memungkinkan kamu menghasilkan gambar AI dari deskripsi teks menggunakan model [Stable Diffusion v1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5). Aplikasi ini dirancang untuk memberikan kontrol penuh kepada pengguna melalui pengaturan seperti prompt positif/negatif, jumlah langkah inferensi, skala panduan (CFG), dan seed acak atau manual.
 
 ---
 
 ## 🚀 Fitur Utama
 
-- **Antarmuka Interaktif**: Masukkan prompt positif dan negatif untuk mengarahkan hasil gambar sesuai keinginan Anda.
+- **Antarmuka Interaktif**: Masukkan prompt positif dan negatif untuk mengarahkan hasil gambar sesuai keinginan kamu.
 - **Pengaturan Lanjutan**:
   - *Jumlah Langkah Inferensi*: Kontrol detail gambar dengan menyesuaikan jumlah langkah difusi.
   - *Skala Panduan (CFG Scale)*: Tentukan seberapa ketat model mengikuti prompt yang diberikan.
