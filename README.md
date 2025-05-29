@@ -1,66 +1,66 @@
 # ✨ PXD Stable Diffusion Image-Generator
 
-**PXD Image Generator** adalah aplikasi berbasis Streamlit yang memungkinkan kamu menghasilkan gambar AI dari deskripsi teks menggunakan model [Stable Diffusion v1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5). Aplikasi ini dirancang untuk memberikan kontrol penuh kepada pengguna melalui pengaturan seperti prompt positif/negatif, jumlah langkah inferensi, skala panduan (CFG), dan seed acak atau manual.
+**PXD Image Generator** is a Streamlit-based application that allows you to generate AI images from text descriptions using the [Stable Diffusion v1.5](https://huggingface.co/runwayml/stable-diffusion-v1-5) model. This app is designed to give users full control through options like positive/negative prompts, number of inference steps, guidance scale (CFG), and random or manual seed selection.
 
 ---
 
-## 🚀 Fitur Utama
+## 🚀 Key Features
 
-- **Antarmuka Interaktif**: Masukkan prompt positif dan negatif untuk mengarahkan hasil gambar sesuai keinginan kamu.
-- **Pengaturan Lanjutan**:
-  - *Jumlah Langkah Inferensi*: Kontrol detail gambar dengan menyesuaikan jumlah langkah difusi.
-  - *Skala Panduan (CFG Scale)*: Tentukan seberapa ketat model mengikuti prompt yang diberikan.
-  - *Seed*: Pilih antara seed acak untuk variasi atau seed manual untuk reproduktibilitas.
-- **Dukungan GPU/CPU Otomatis**: Aplikasi secara otomatis mendeteksi dan memanfaatkan GPU jika tersedia, atau beralih ke CPU dengan pengaturan yang sesuai.
-- **Caching Model**: Menggunakan `@st.cache_resource` untuk memuat model sekali dan meningkatkan efisiensi.
+- **Interactive Interface**: Enter positive and negative prompts to guide image results according to your preferences.
+- **Advanced Settings**:
+  - *Number of Inference Steps*: Control image detail by adjusting the number of diffusion steps.
+  - *Guidance Scale (CFG Scale)*: Set how closely the model follows the given prompt.
+  - *Seed*: Choose between a random seed for variation or a manual seed for reproducibility.
+- **Automatic GPU/CPU Support**: Automatically detects and utilizes GPU if available, or falls back to CPU with appropriate settings.
+- **Model Caching**: Uses `@st.cache_resource` to load the model once and improve efficiency.
 
 ---
 
-## 🖼️ Contoh Prompt
+## 🖼️ Example Prompts
 
-**Prompt Positif**:
+**Positive Prompt**:
 ```
 snow-capped mountain range at night reflecting a vibrant aurora borealis, long exposure, ethereal lighting, sense of wonder and tranquility
 ```
 
-**Prompt Negatif**:
+**Negative Prompt**:
 ```
 low quality, blurry, ugly, distorted, bad anatomy, deformed, text, watermark, extra fingers, malformed hands
 ```
 
 ---
 
-## 🛠️ Instalasi & Menjalankan Aplikasi
+## 🛠️ Installation & Running the App
 
-1. **Kloning Repositori**:
+1. **Clone the Repository**:
    ```bash
    git clone https://github.com/Pixel4bit/pxd-image-generator.git
    cd pxd-image-generator
    ```
 
-2. **Buat dan Aktifkan Virtual Environment**:
+2. **Create and Activate a Virtual Environment**:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # Untuk Unix atau MacOS
-   venv\Scripts\activate     # Untuk Windows
+   source venv/bin/activate  # For Unix or MacOS
+   venv\Scripts\activate     # For Windows
    ```
 
-3. **Instalasi Dependensi**:
+3. **Install Dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Jalankan Aplikasi Streamlit**:
+4. **Run the Streamlit App**:
    ```bash
    streamlit run streamlit_app.py
    ```
 
 ---
 
-## ⚙️ Persyaratan Sistem
+## ⚙️ System Requirements
 
-- **Python**: Versi 3.8 atau lebih baru
-- **Dependensi Utama**:
+- **Python**: Version 3.8 or later
+- **Core Dependencies**:
   - `streamlit`
   - `diffusers`
   - `transformers`
@@ -69,34 +69,34 @@ low quality, blurry, ugly, distorted, bad anatomy, deformed, text, watermark, ex
   - `torch`
   - `Pillow`
   - `invisible_watermark`
-- **Perangkat Keras**:
-  - GPU dengan dukungan CUDA (opsional namun direkomendasikan untuk performa optimal)
+- **Hardware**:
+  - GPU with CUDA support (optional but recommended for optimal performance)
 
 ---
 
-## 📦 Struktur Proyek
+## 📦 Project Structure
 
 ```
 pxd-image-generator/
-├── streamlit_app.py       # Skrip utama aplikasi Streamlit
-├── requirements.txt       # Daftar dependensi Python
-└── README.md              # Dokumentasi proyek
+├── streamlit_app.py       # Main Streamlit app script
+├── requirements.txt       # Python dependencies list
+└── README.md              # Project documentation
 ```
 
 ---
 
-## 📄 Lisensi
+## 📄 License
 
-Proyek ini dilisensikan di bawah [Apache 2.0](LICENSE).
-
----
-
-## 🙌 Kontribusi
-
-Kontribusi sangat dihargai! Silakan buka *issue* atau *pull request* untuk perbaikan, fitur baru, atau diskusi lainnya.
+This project is licensed under the [Apache 2.0](LICENSE) License.
 
 ---
 
-## 📬 Kontak
+## 🙌 Contributions
 
-Dikembangkan oleh [Pixel4bit (pianxd)](https://github.com/Pixel4bit). Untuk pertanyaan atau saran, silakan hubungi melalui GitHub.
+Contributions are welcome! Feel free to open an *issue* or *pull request* for improvements, new features, or discussions.
+
+---
+
+## 📬 Contact
+
+Developed by [Pixel4bit (pianxd)](https://github.com/Pixel4bit). For questions or suggestions, feel free to reach out via GitHub.
